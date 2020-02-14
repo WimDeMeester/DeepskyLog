@@ -15,6 +15,10 @@ Here's what you can do to help:
 + Whenever you have questions on how to help, do not hesitate to contact us. We can set up one-to-one sessions to get you started.
 + Please always be polite and helpfull. We are developing and maintaining DeepskyLog in our free time. See our [code of conduct](CODE_OF_CONDUCT.md).
 
+## Setting up a development environment
+
++ See the [documentation on how to set up the development environment](documentation/Development.md)
+
 ## Code submission and pull request guidelines
 
 + Your code will be checked for clean code using [php codesniffer](https://github.com/squizlabs/PHP_CodeSniffer).
@@ -47,4 +51,4 @@ If you spot a mistake in one of the translations, please let us know or change t
 
 If you are interested in adding a new language to [DeepskyLog](https://www.deepskylog.org), please contact us, then we can help to get you started.
 
-We don't have any Swedish and Spanish speakers in the DeepskyLog team, so most of the translation is done using google translate and bing. We really could use a native speaker to make the translation better!
+We don't have any native Swedish and Spanish speakers in the DeepskyLog team, so most of the translation is done using google translate and bing. We really could use a native speaker to make the translation better!

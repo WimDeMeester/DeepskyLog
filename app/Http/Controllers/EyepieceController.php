@@ -95,6 +95,21 @@ class EyepieceController extends Controller
     }
 
     /**
+     * Display a listing of the types of eyepieces of a given brand in JSON format.
+     *
+     * @param string $brand The brand of the eyepiece
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getEyepieceTypeJson(string $brand)
+    {
+        $types = \App\EyepieceType::where('brand', $brand)
+            ->pluck('type')->sort()->values();
+
+        return response($types->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @param Eyepiece $eyepiece The eyepiece to fill out in the fields
@@ -120,14 +135,34 @@ class EyepieceController extends Controller
     {
         $request['user_id'] = auth()->id();
 
-        $validated = request()->validate(
-            [
-                'user_id' => 'required',
-                'name' => 'required|min:6',
-                'focalLength' => 'required|numeric|gte:1|lte:99',
-                'apparentFOV' => 'required|numeric|gte:20|lte:150',
-            ]
-        );
+        $validated = $this->validateInput($request);
+
+        // Check if brand is already in the database.
+        if (\App\EyepieceBrand::where(
+            'brand', $request->get('brand')
+        )->get()->isEmpty()
+        ) {
+            // Add the new brand to the database
+            \App\EyepieceBrand::create(
+                [
+                    'brand' => $request->get('brand')
+                ]
+            );
+        }
+
+        // Check if brand is already in the database.
+        if (\App\EyepieceType::where(
+            'type', $request->get('type')
+        )->where('brand', $request->get('brand'))->get()->isEmpty()
+        ) {
+            // Add the new brand to the database
+            \App\EyepieceType::create(
+                [
+                    'type' => $request->get('type'),
+                    'brand' => $request->get('brand')
+                ]
+            );
+        }
 
         $eyepiece = Eyepiece::create($validated);
 
@@ -143,6 +178,27 @@ class EyepieceController extends Controller
 
         // View the page with all eyepieces for the user
         return redirect('/eyepiece');
+    }
+
+    /**
+     * Validate the values of the form.
+     *
+     * @param \Illuminate\Http\Request $request The request with all information
+     *
+     * @return \Illuminate\Http\Request The validated request
+     */
+    public function validateInput(Request $request)
+    {
+        return $request->validate(
+            [
+                'user_id' => 'required',
+                'name' => 'required|min:6',
+                'brand' => 'required',
+                'type' => 'required',
+                'focalLength' => 'required|numeric|gte:1|lte:99',
+                'apparentFOV' => 'required|numeric|gte:20|lte:150',
+            ]
+        );
     }
 
     /**
@@ -190,17 +246,39 @@ class EyepieceController extends Controller
 
         // If the factor is set, the name should also be set in the form.
         if ($request->has('focalLength')) {
-            request()->validate(
-                [
-                    'user_id' => 'required',
-                    'name' => 'required|min:6',
-                    'focalLength' => 'required|numeric|gte:1|lte:99',
-                    'apparentFOV' => 'required|numeric|gte:20|lte:150',
-                ]
-            );
+            $this->validateInput($request);
+
+            // Check if brand is already in the database.
+            if (\App\EyepieceBrand::where(
+                'brand', $request->get('brand')
+            )->get()->isEmpty()
+            ) {
+                // Add the new brand to the database
+                \App\EyepieceBrand::create(
+                    [
+                        'brand' => $request->get('brand')
+                    ]
+                );
+            }
+
+            // Check if brand is already in the database.
+            if (\App\EyepieceType::where(
+                'type', $request->get('type')
+            )->where('brand', $request->get('brand'))->get()->isEmpty()
+            ) {
+                // Add the new brand to the database
+                \App\EyepieceType::create(
+                    [
+                        'type' => $request->get('type'),
+                        'brand' => $request->get('brand')
+                    ]
+                );
+            }
 
             $eyepiece->update(['focalLength' => $request->get('focalLength')]);
             $eyepiece->update(['name' => $request->get('name')]);
+            $eyepiece->update(['brand' => $request->get('brand')]);
+            $eyepiece->update(['type' => $request->get('type')]);
             $eyepiece->update(['apparentFOV' => $request->get('apparentFOV')]);
             $eyepiece->update(['maxFocalLength' => $request->get('maxFocalLength')]);
 

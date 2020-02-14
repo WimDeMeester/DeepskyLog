@@ -41,10 +41,10 @@ class EyepieceDataTable extends DataTable
             $model = Eyepiece::with('user')->select('eyepieces.*');
         } else {
             $model = Eyepiece::where(
-                'user_id', auth()->user()->id
+                'user_id',
+                auth()->user()->id
             )->with('user')->select('eyepieces.*');
         }
-
 
         return datatables()
             ->eloquent($model)
@@ -127,7 +127,7 @@ class EyepieceDataTable extends DataTable
      */
     protected function getMyParameters()
     {
-        $language = ['url' => 'http://cdn.datatables.net/plug-ins/1.10.19/i18n/'
+        $language = ['url' => 'http://cdn.datatables.net/plug-ins/1.10.20/i18n/'
             . \PeterColes\Languages\LanguagesFacade::lookup(
                 [\Xinax\LaravelGettext\Facades\LaravelGettext::getLocaleLanguage()],
                 'en'
@@ -158,11 +158,23 @@ class EyepieceDataTable extends DataTable
                     'width' => '10%',
                     'searchable' => false,
                 ],
+                ['name' => 'brand',
+                    'title' => _i('Brand'),
+                    'data' => 'brand',
+                    'width' => '10%',
+                    'searchable' => true,
+                ],
                 ['name' => 'apparentFOV',
                     'title' => _i('Apparent Field of View'),
                     'data' => 'apparentFOV',
                     'width' => '10%',
                     'searchable' => false,
+                ],
+                ['name' => 'type',
+                    'title' => _i('Type'),
+                    'data' => 'type',
+                    'width' => '10%',
+                    'searchable' => true,
                 ],
                 ['name' => 'maxFocalLength',
                     'title' => _i('Maximum Focal Length'),
@@ -202,11 +214,23 @@ class EyepieceDataTable extends DataTable
                     'width' => '10%',
                     'searchable' => false,
                 ],
+                ['name' => 'brand',
+                    'title' => _i('Brand'),
+                    'data' => 'brand',
+                    'width' => '10%',
+                    'searchable' => true,
+                ],
                 ['name' => 'apparentFOV',
                     'title' => _i('Apparent Field of View'),
                     'data' => 'apparentFOV',
                     'width' => '10%',
                     'searchable' => false,
+                ],
+                ['name' => 'type',
+                    'title' => _i('Type'),
+                    'data' => 'type',
+                    'width' => '10%',
+                    'searchable' => true,
                 ],
                 ['name' => 'maxFocalLength',
                     'title' => _i('Maximum Focal Length'),

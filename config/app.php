@@ -55,7 +55,7 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
-    'dslversion' => '2019.laravel',
+    'dslversion' => '2020.laravel',
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -180,6 +180,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
+
+        \SocialiteProviders\Manager\ServiceProvider::class,
     ],
 
     /*
@@ -229,6 +231,7 @@ return [
         'Route' => Illuminate\Support\Facades\Route::class,
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,

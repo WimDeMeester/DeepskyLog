@@ -91,6 +91,8 @@ Route::get('/eyepiece/{eyepiece}', 'EyepieceController@show')->name('eyepiece.sh
 
 Route::get('/getEyepieceJson/{id}', 'EyepieceController@getEyepieceJson');
 
+Route::get('/getEyepieceTypeJson/{brand}', 'EyepieceController@getEyepieceTypeJson');
+
 Route::get('/eyepiece/{eyepiece}/getImage', 'EyepieceController@getImage')
     ->name('eyepiece.getImage');
 
@@ -202,3 +204,8 @@ Route::get('/getCatalogData/{catalog}', 'TargetController@getCatalogData');
 Route::get('/getConstellationInfo/{catalog}', 'TargetController@getConstellationInfo');
 Route::get('/getTypeInfo/{catalog}', 'TargetController@getTypeInfo');
 Route::get('/target/{name}', 'TargetController@show');
+
+// Social log in
+Route::get('/redirect/{service}', 'SocialAuthController@redirect');
+//Route::get('/callback/{service}', 'SocialAuthController@callback');
+Route::get('/callback/{service}', 'Auth\LoginController@handleProviderCallback');
