@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Lens;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LensPolicy
@@ -19,6 +19,6 @@ class LensPolicy
      */
     public function update(User $user, Lens $lens)
     {
-        return $user->id === $lens->user_id;
+        return $user->id == $lens->user_id;
     }
 }

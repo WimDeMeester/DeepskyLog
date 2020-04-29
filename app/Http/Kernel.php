@@ -5,7 +5,6 @@
  * PHP Version 7
  *
  * @category Laravel
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -19,7 +18,6 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
  * Language middleware.
  *
  * @category Laravel
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -52,7 +50,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Coderello\Laraflash\Middleware\HandleLaraflash::class,
-            \Xinax\LaravelGettext\Middleware\GettextMiddleware::class,
+            \deepskylog\LaravelGettext\Middleware\GettextMiddleware::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

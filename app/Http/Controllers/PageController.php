@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-class PagesController extends Controller
+class PageController extends Controller
 {
-    function home()
+    public function home()
     {
         return view('welcome');
     }
 
-    function privacy()
+    public function privacy()
     {
         return view('privacy');
     }

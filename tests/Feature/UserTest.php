@@ -5,17 +5,15 @@
  * PHP Version 7
  *
  * @category Test
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
  */
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * Tests for creating, deleting, and adapting users.
@@ -23,15 +21,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * PHP Version 7
  *
  * @category Test
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
  */
-
 class UserTest extends TestCase
 {
-    //use RefreshDatabase;
+    use RefreshDatabase;
 
     /**
      * Checks whether the user can have a lens.
@@ -60,4 +56,6 @@ class UserTest extends TestCase
         $this->assertEquals('Tested lens', $user->lenses->first()->name);
         $this->assertEquals(1.43, $user->lenses->first()->factor);
     }
+
+    // TODO: Rewrite charts to use https://dev.to/arielmejiadev/use-laravel-charts-in-laravel-5bbm
 }

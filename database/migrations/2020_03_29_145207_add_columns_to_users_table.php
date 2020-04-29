@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddColumnsToUsersTable extends Migration
 {
@@ -12,17 +12,17 @@ class AddColumnsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->after('id');
+            $table->string('username')->after('id')->default('');
             $table->string('type')->default('default');
-            $table->string('country');
-            $table->integer('stdlocation')->default(0);
-            $table->integer('stdtelescope')->default(0);
+            $table->string('country')->default('');
+            $table->unsignedinteger('stdlocation')->default(0);
+            $table->unsignedinteger('stdtelescope')->default(0);
             $table->string('language')->default('en_US');
             $table->string('icqname')->nullable();
             $table->string('observationlanguage')->default('en');
             $table->string('standardAtlasCode')->default('urano');
             $table->float('fstOffset')->default(0.0);
-            $table->string('copyright');
+            $table->string('copyright')->default('');
             $table->string('overviewdsos')->default(10);
             $table->string('lookupdsos')->default(12);
             $table->string('detaildsos')->default(15);
@@ -38,6 +38,10 @@ class AddColumnsToUsersTable extends Migration
             $table->boolean('sendMail')->default(false);
             $table->string('version')->default('2019.12');
             $table->boolean('showInches')->default(false);
+
+            $table->foreign('stdlocation')->references('id')->on('locations');
+            $table->foreign('stdtelescope')->references('id')->on('instruments');
+            $table->foreign('standardAtlasCode')->references('code')->on('atlases');
         });
     }
 

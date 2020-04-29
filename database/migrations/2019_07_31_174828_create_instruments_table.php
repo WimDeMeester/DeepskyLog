@@ -1,21 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateInstrumentsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
      */
     public function up()
     {
         Schema::create(
             'instruments',
             function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->increments('id');
                 $table->string('name', 255);
                 $table->float('diameter');
                 $table->unsignedInteger('type');
@@ -23,7 +22,6 @@ class CreateInstrumentsTable extends Migration
                 $table->unsignedInteger('fixedMagnification')->nullable();
                 $table->unsignedInteger('user_id');
                 $table->boolean('active')->default(true);
-                $table->unsignedInteger('observations')->default(0);
 
                 $table->timestamps();
 
@@ -35,7 +33,6 @@ class CreateInstrumentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
      */
     public function down()
     {

@@ -5,7 +5,6 @@
  * PHP Version 7
  *
  * @category Language
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -14,14 +13,13 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Xinax\LaravelGettext\Facades\LaravelGettext;
+use deepskylog\LaravelGettext\Facades\LaravelGettext;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * Language middleware.
  *
  * @category Lenses
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org

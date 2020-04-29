@@ -5,7 +5,6 @@
  * PHP Version 7
  *
  * @category Instruments
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -13,18 +12,17 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\InstrumentDataTable;
 use App\Instrument;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\DataTables\InstrumentDataTable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Instrument Controller.
  *
  * @category Instruments
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -37,7 +35,7 @@ class InstrumentController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth', 'verified'])->except(['show']);
+        $this->middleware(['auth', 'verified'])->except(['show', 'getImage']);
     }
 
     /**
@@ -72,7 +70,7 @@ class InstrumentController extends Controller
      * Display a listing of the resource.
      *
      * @param InstrumentDataTable $dataTable The instrument datatable
-     * @param String              $user      user for a normal user, admin for an admin
+     * @param string              $user      user for a normal user, admin for an admin
      *
      * @return \Illuminate\Http\Response
      */
@@ -133,7 +131,7 @@ class InstrumentController extends Controller
             // Add the picture
             Instrument::find($instrument->id)
                 ->addMedia($request->picture->path())
-                ->usingFileName($instrument->id . '.png')
+                ->usingFileName($instrument->id.'.png')
                 ->toMediaCollection('instrument');
         }
 
@@ -158,8 +156,8 @@ class InstrumentController extends Controller
                 'name' => 'required|min:6',
                 'type' => 'required',
                 'diameter' => 'required|numeric|gt:0',
-                'fd' => 'gte:1|required_without_all:fixedMagnification',
-                'fixedMagnification' => 'gte:0|required_without_all:fd'
+                'fd' => 'gte:1|required_without:fixedMagnification',
+                'fixedMagnification' => 'gte:0|required_without:fd',
             ]
         );
     }
@@ -173,7 +171,12 @@ class InstrumentController extends Controller
      */
     public function show(Instrument $instrument)
     {
-        return view('layout.instrument.show', ['instrument' => $instrument]);
+        $media = $this->getImage($instrument);
+
+        return view(
+            'layout.instrument.show',
+            ['instrument' => $instrument, 'media' => $media]
+        );
     }
 
     /**
@@ -238,7 +241,7 @@ class InstrumentController extends Controller
                 // Update the picture
                 Instrument::find($instrument->id)
                     ->addMedia($request->picture->path())
-                    ->usingFileName($instrument->id . '.png')
+                    ->usingFileName($instrument->id.'.png')
                     ->toMediaCollection('instrument');
             }
 
@@ -274,35 +277,32 @@ class InstrumentController extends Controller
     /**
      * Returns the image of the instrument.
      *
-     * @param int $id The id of the instrument
+     * @param Instrument $instrument The instrument
      *
      * @return MediaObject the image of the instrument
      */
-    public function getImage($id)
+    public function getImage(Instrument $instrument)
     {
-        if (Instrument::find($id)->hasMedia('instrument')) {
-            return Instrument::find($id)
-                ->getFirstMedia('instrument');
-        } else {
-            Instrument::find($id)
-                ->addMediaFromUrl(asset('images/telescopeCartoon.png'))
-                ->usingFileName($id . '.png')
+        if (! $instrument->hasMedia('instrument')) {
+            $instrument->addMediaFromUrl(asset('images/telescopeCartoon.png'))
+                ->usingFileName($instrument->id.'.png')
                 ->toMediaCollection('instrument');
-
-            return Instrument::find($id)
-                ->getFirstMedia('instrument');
         }
+
+        return $instrument->getFirstMedia('instrument');
     }
 
     /**
-     * Remove the image of the instrument
+     * Remove the image of the instrument.
      *
-     * @param integer $id The id of the instrument
+     * @param int $id The id of the instrument
      *
      * @return None
      */
     public function deleteImage($id)
     {
+        $this->authorize('update', Instrument::find($id));
+
         Instrument::find($id)
             ->getFirstMedia('instrument')
             ->delete();

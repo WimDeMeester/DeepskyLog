@@ -5,7 +5,6 @@
  * PHP Version 7
  *
  * @category Lenses
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -13,17 +12,16 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\LensDataTable;
 use App\Lens;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\DataTables\LensDataTable;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Lens Controller.
  *
  * @category Lenses
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -36,7 +34,7 @@ class LensController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth', 'verified'])->except(['show']);
+        $this->middleware(['auth', 'verified'])->except(['show', 'getImage']);
     }
 
     /**
@@ -73,7 +71,7 @@ class LensController extends Controller
      * Display a listing of the resource.
      *
      * @param LensDataTable $dataTable The lens datatable
-     * @param String        $user      user for a normal user, admin for an admin
+     * @param string        $user      user for a normal user, admin for an admin
      *
      * @return \Illuminate\Http\Response
      */
@@ -127,7 +125,7 @@ class LensController extends Controller
             // Add the picture
             Lens::find($lens->id)
                 ->addMedia($request->picture->path())
-                ->usingFileName($lens->id . '.png')
+                ->usingFileName($lens->id.'.png')
                 ->toMediaCollection('lens');
         }
 
@@ -164,7 +162,9 @@ class LensController extends Controller
      */
     public function show(Lens $lens)
     {
-        return view('layout.lens.show', ['lens' => $lens]);
+        $media = $this->getImage($lens);
+
+        return view('layout.lens.show', ['lens' => $lens, 'media' => $media]);
     }
 
     /**
@@ -214,7 +214,7 @@ class LensController extends Controller
                 // Update the picture
                 Lens::find($lens->id)
                     ->addMedia($request->picture->path())
-                    ->usingFileName($lens->id . '.png')
+                    ->usingFileName($lens->id.'.png')
                     ->toMediaCollection('lens');
             }
 
@@ -237,35 +237,32 @@ class LensController extends Controller
     /**
      * Returns the image of the lens.
      *
-     * @param int $id The id of the lens
+     * @param Lens $lens The lens
      *
      * @return MediaObject the image of the lens
      */
-    public function getImage($id)
+    public function getImage(Lens $lens)
     {
-        if (Lens::find($id)->hasMedia('lens')) {
-            return Lens::find($id)
-                ->getFirstMedia('lens');
-        } else {
-            Lens::find($id)
-                ->addMediaFromUrl(asset('images/lens.jpg'))
-                ->usingFileName($id . '.png')
+        if (! $lens->hasMedia('lens')) {
+            $lens->addMediaFromUrl(asset('images/lens.jpg'))
+                ->usingFileName($lens->id.'.png')
                 ->toMediaCollection('lens');
-
-            return Lens::find($id)
-                ->getFirstMedia('lens');
         }
+
+        return $lens->getFirstMedia('lens');
     }
 
     /**
-     * Remove the image of the lens
+     * Remove the image of the lens.
      *
-     * @param integer $id The id of the lens
+     * @param int $id The id of the lens
      *
      * @return None
      */
     public function deleteImage($id)
     {
+        $this->authorize('update', Lens::find($id));
+
         Lens::find($id)
             ->getFirstMedia('lens')
             ->delete();

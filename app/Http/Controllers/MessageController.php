@@ -5,7 +5,6 @@
  * PHP Version 7
  *
  * @category Messages
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -13,6 +12,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MessageReceived;
 use App\User;
 use Carbon\Carbon;
 use Cmgmyr\Messenger\Models\Message;
@@ -21,19 +21,17 @@ use Cmgmyr\Messenger\Models\Thread;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-use App\Mail\MessageReceived;
 use Illuminate\Support\Facades\Mail;
 
 /**
  * Messages Controller.
  *
  * @category Messages
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
  */
-class MessagesController extends Controller
+class MessageController extends Controller
 {
     /**
      * Make sure the message pages can only be seen if the user is authenticated
@@ -52,12 +50,14 @@ class MessagesController extends Controller
     public function index()
     {
         // All threads that user is participating in
-        $allThreads = Thread::forUser(Auth::id())->latest('updated_at')->get();
+        $allThreads = Thread::forUser(Auth::id())
+            ->with(['participants', 'messages'])
+            ->latest('updated_at')->get();
 
         // All threads that user is participating in, with new messages
         $newThreads = Thread::forUserWithNewMessages(
             Auth::id()
-        )->latest('updated_at')->get();
+        )->with(['participants', 'messages'])->latest('updated_at')->get();
 
         $oldThreads = $allThreads->diff($newThreads);
 
@@ -67,7 +67,7 @@ class MessagesController extends Controller
     /**
      * Shows a message thread.
      *
-     * @param Integer $id the id of the thread to show
+     * @param int $id the id of the thread to show
      *
      * @return mixed
      */
@@ -86,7 +86,7 @@ class MessagesController extends Controller
         // show current user in list if not a current participant
         $allowedUsers = $thread->participantsUserIds();
 
-        if (!in_array(Auth::id(), $allowedUsers)) {
+        if (! in_array(Auth::id(), $allowedUsers)) {
             abort(403, _i('Not authorized to see this message.'));
         }
 
@@ -133,7 +133,7 @@ class MessagesController extends Controller
     /**
      * Creates a new message thread.
      *
-     * @param Integer $id The id to send the mail to
+     * @param int $id The id to send the mail to
      *
      * @return mixed
      */
@@ -154,7 +154,7 @@ class MessagesController extends Controller
         $input = Input::all();
 
         if (count($input['recipients']) == 1) {
-            if ($input['recipients'][0] == "All") {
+            if ($input['recipients'][0] == 'All') {
                 $users = User::where('id', '!=', Auth::id())->get();
                 foreach ($users as $user) {
                     $thread = Thread::create(
@@ -196,6 +196,7 @@ class MessagesController extends Controller
                         );
                     }
                 }
+
                 return redirect()->route('messages');
             }
         }
@@ -250,7 +251,7 @@ class MessagesController extends Controller
     /**
      * Adds a new message to a current thread.
      *
-     * @param Integer $id the id of the thread to update
+     * @param int $id the id of the thread to update
      *
      * @return mixed
      */

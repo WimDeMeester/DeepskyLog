@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Instrument;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InstrumentPolicy
@@ -20,6 +20,6 @@ class InstrumentPolicy
      */
     public function update(User $user, Instrument $instrument)
     {
-        return $user->id === $instrument->user_id;
+        return $user->id == $instrument->user_id;
     }
 }

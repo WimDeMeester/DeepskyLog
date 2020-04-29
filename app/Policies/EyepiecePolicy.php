@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Eyepiece;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EyepiecePolicy
@@ -20,6 +20,6 @@ class EyepiecePolicy
      */
     public function update(User $user, Eyepiece $eyepiece)
     {
-        return $user->id === $eyepiece->user_id;
+        return $user->id == $eyepiece->user_id;
     }
 }

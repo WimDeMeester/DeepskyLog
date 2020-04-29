@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Filter;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FilterPolicy
@@ -20,6 +20,6 @@ class FilterPolicy
      */
     public function update(User $user, Filter $filter)
     {
-        return $user->id === $filter->user_id;
+        return $user->id == $filter->user_id;
     }
 }

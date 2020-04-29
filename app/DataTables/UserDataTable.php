@@ -6,7 +6,6 @@
  * PHP Version 7
  *
  * @category Authentication
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -23,7 +22,6 @@ use Yajra\DataTables\Services\DataTable;
  * PHP Version 7
  *
  * @category Authentication
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -67,14 +65,19 @@ class UserDataTable extends DataTable
                 // TODO: Make sortable
                 'observations',
                 function ($user) {
-                    return count($user->lenses);
+                    return 'TODO';
                 }
             )->addColumn(
-                // TODO: Add the correct number of instruments
                 // TODO: Make sortable
                 'instruments',
                 function ($user) {
-                    return count($user->lenses);
+                    return count($user->instruments);
+                }
+            )->addColumn(
+                // TODO: Make sortable
+                'locations',
+                function ($user) {
+                    return count($user->locations);
                 }
             )->addColumn(
                 // TODO: Add the correct number of lists
@@ -120,11 +123,11 @@ class UserDataTable extends DataTable
     protected function getMyParameters()
     {
         $language = ['url' => 'http://cdn.datatables.net/plug-ins/1.10.20/i18n/'
-            . \PeterColes\Languages\LanguagesFacade::lookup(
-                [\Xinax\LaravelGettext\Facades\LaravelGettext::getLocaleLanguage()],
+            .\PeterColes\Languages\LanguagesFacade::lookup(
+                [\deepskylog\LaravelGettext\Facades\LaravelGettext::getLocaleLanguage()],
                 'en'
             )->first()
-            . '.json'];
+            .'.json', ];
         $mypars = $this->getBuilderParameters();
         $mypars['language'] = $language;
 
@@ -174,6 +177,12 @@ class UserDataTable extends DataTable
             ['name' => 'instruments',
                 'title' => _i('Instruments'),
                 'data' => 'instruments',
+                'orderable' => false,
+                'searchable' => false,
+            ],
+            ['name' => 'locations',
+                'title' => _i('Locations'),
+                'data' => 'locations',
                 'orderable' => false,
                 'searchable' => false,
             ],

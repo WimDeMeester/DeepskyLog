@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Location;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LocationPolicy
@@ -20,6 +20,6 @@ class LocationPolicy
      */
     public function update(User $user, Location $location)
     {
-        return $user->id === $location->user_id;
+        return $user->id == $location->user_id;
     }
 }

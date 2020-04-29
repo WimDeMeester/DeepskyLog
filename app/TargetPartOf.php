@@ -6,7 +6,6 @@
  * PHP Version 7
  *
  * @category Targets
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -20,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
  * TargetPartOf eloquent model.
  *
  * @category Targets
- * @package  DeepskyLog
  * @author   Wim De Meester <deepskywim@gmail.com>
  * @license  GPL3 <https://opensource.org/licenses/GPL-3.0>
  * @link     http://www.deepskylog.org
@@ -28,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 class TargetPartOf extends Model
 {
     protected $table = 'target_partof';
+
+    public $incrementing = false;
 
     /**
      * Check if the object is part of another object.
@@ -38,7 +38,7 @@ class TargetPartOf extends Model
      */
     public static function isPartOf($name)
     {
-        return \App\TargetPartOf::where('objectname', $name)->get()->count();
+        return self::where('objectname', $name)->get()->count();
     }
 
     /**
@@ -50,7 +50,7 @@ class TargetPartOf extends Model
      */
     public static function contains($name)
     {
-        return \App\TargetPartOf::where('partofname', $name)->get()->count();
+        return self::where('partofname', $name)->get()->count();
     }
 
     /**
@@ -66,11 +66,11 @@ class TargetPartOf extends Model
         $output = '(';
 
         $contains = '';
-        if (\App\TargetPartOf::contains($name)) {
-            foreach (\App\TargetPartOf::where('partofname', $name)->get() as $partOfObject) {
-                $contains .= ($contains ? "/" : "")
-                    . '<a href="/target/' . $partOfObject->objectname . '">'
-                    . $partOfObject->objectname . "</a>";
+        if (self::contains($name)) {
+            foreach (self::where('partofname', $name)->get() as $partOfObject) {
+                $contains .= ($contains ? '/' : '')
+                    .'<a href="/target/'.$partOfObject->objectname.'">'
+                    .$partOfObject->objectname.'</a>';
             }
         } else {
             $contains .= '-';
@@ -80,11 +80,11 @@ class TargetPartOf extends Model
         $output .= ')/';
 
         $partOf = '';
-        if (\App\TargetPartOf::isPartOf($name)) {
-            foreach (\App\TargetPartOf::where('objectname', $name)->get() as $partOfObject) {
-                $partOf .= ($partOf ? "/" : "")
-                    . '<a href="/target/' . $partOfObject->partofname . '">'
-                    . $partOfObject->partofname . "</a>";
+        if (self::isPartOf($name)) {
+            foreach (self::where('objectname', $name)->get() as $partOfObject) {
+                $partOf .= ($partOf ? '/' : '')
+                    .'<a href="/target/'.$partOfObject->partofname.'">'
+                    .$partOfObject->partofname.'</a>';
             }
         } else {
             $partOf .= '-';

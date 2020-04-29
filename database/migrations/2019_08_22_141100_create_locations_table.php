@@ -1,21 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateLocationsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
      */
     public function up()
     {
         Schema::create(
             'locations',
             function (Blueprint $table) {
-                $table->bigIncrements('id');
+                $table->increments('id');
                 $table->string('name', 255);
                 $table->float('longitude', 8, 5);
                 $table->float('latitude', 8, 5);
@@ -27,7 +26,6 @@ class CreateLocationsTable extends Migration
                 $table->unsignedSmallInteger('bortle')->nullable();
                 $table->unsignedInteger('user_id');
                 $table->boolean('active')->default(true);
-                $table->unsignedInteger('observations')->default(0);
 
                 $table->timestamps();
 
@@ -39,7 +37,6 @@ class CreateLocationsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
      */
     public function down()
     {
